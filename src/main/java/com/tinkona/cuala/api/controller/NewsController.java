@@ -2,11 +2,8 @@ package com.tinkona.cuala.api.controller;
 
 import com.tinkona.cuala.api.model.News;
 import com.tinkona.cuala.api.model.Response;
-import com.tinkona.cuala.api.model.User;
 import com.tinkona.cuala.api.service.contract.NewsService;
-import com.tinkona.cuala.api.service.contract.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -25,13 +22,13 @@ public class NewsController {
 
     @RequestMapping(value = "/",method = RequestMethod.POST)
     public @ResponseBody
-    Response<User> create(@RequestBody News news){
+    Response<News> create(@RequestBody News news){
         return newsService.create(news);
     }
 
     @RequestMapping(value = "/paginate",method = RequestMethod.GET)
     public @ResponseBody
-    Response<User> fetchNews(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+    Response<News> fetchNews(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
         return newsService.fetchPaginated(pageNum,pageSize);
     }
 
