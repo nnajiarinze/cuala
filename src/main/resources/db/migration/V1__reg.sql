@@ -21,14 +21,13 @@ CREATE TABLE tbl_news
  headline varchar(250) NOT NULL,
  brief varchar(150) NULL,
  description TEXT NOT NULL,
- is_published BOOLEAN  default 0,
  publish_date DATE NULL,
  author varchar(150) NOT NULL,
  tweet_text varchar(140) NULL,
  created_date DATE NULL,
  tags TEXT NULL,
  image varchar(1000) NULL,
- deleted BOOLEAN default 0,
+ deleted BOOLEAN  default FALSE,
  last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (ID)
 );
@@ -150,4 +149,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_update_user (
      course=coursee,occupation=occupationn WHERE id=idd
 
 
+DELIMITER ;
+
+
+DROP procedure IF exists psp_create_news;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_news (
+  IN headlinee varchar(250),
+  IN brieff varchar(150),
+  IN descriptionn TEXT,
+  IN authorr varchar(150),
+  IN publish_datee DATE,
+  IN tweet_textt varchar(140),
+  IN created_datee DATE,
+  IN tagss TEXT,
+  IN imagee varchar(1000),
+  IN deletedd TINYINT,
+  OUT id INT
+  )
+BEGIN
+	INSERT INTO tbl_news(headline,brief,description,author,publish_date,tweet_text,created_date,tags,image,deleted)
+    VALUES(headlinee,brieff,descriptionn,authorr,publish_datee,tweet_textt,created_datee,tagss,imagee,deletedd);
+
+	SET id = LAST_INSERT_ID();
+END$$
 

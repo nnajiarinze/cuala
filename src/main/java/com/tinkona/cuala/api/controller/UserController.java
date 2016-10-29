@@ -23,7 +23,7 @@ public class UserController {
 
     @RequestMapping(value = "/",method = RequestMethod.POST)
     public @ResponseBody
-    Response<User>   createUser(@RequestBody User user){
+    Response<User> create(@RequestBody User user){
         return userService.createUser(user);
     }
 
@@ -66,7 +66,7 @@ public class UserController {
 
     @RequestMapping(value = "/{id}",method = RequestMethod.POST)
     public @ResponseBody
-    Response<User> updateUser(@PathVariable Integer id,@RequestBody @Validated User user){
+    Response<User> update(@PathVariable Integer id, @RequestBody @Validated User user){
         user.setId(id);
         return userService.updateUser(user);
     }
