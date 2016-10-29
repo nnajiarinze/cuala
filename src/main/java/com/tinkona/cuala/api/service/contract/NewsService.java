@@ -9,7 +9,7 @@ import com.tinkona.cuala.api.model.Response;
 public interface NewsService {
     public Response create(News news);
     public Response fetchAllNews();
-    public Response fetchPaginatedNews(int pageNum, int pageSize);
+    public Response fetchPaginated(int pageNum, int pageSize);
     public Response getNewsById(int id);
     public Response update(int id);
 }

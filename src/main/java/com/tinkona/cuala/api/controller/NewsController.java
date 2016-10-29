@@ -25,8 +25,14 @@ public class NewsController {
 
     @RequestMapping(value = "/",method = RequestMethod.POST)
     public @ResponseBody
-    Response<User>   create(@RequestBody News news){
+    Response<User> create(@RequestBody News news){
         return newsService.create(news);
+    }
+
+    @RequestMapping(value = "/paginate",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<User> fetchNews(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return newsService.fetchPaginated(pageNum,pageSize);
     }
 
 

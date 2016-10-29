@@ -174,3 +174,21 @@ BEGIN
 	SET id = LAST_INSERT_ID();
 END$$
 
+DELIMITER ;
+
+
+DROP procedure IF exists psp_fetch_paginated;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_fetch_paginated (
+  IN page_size INT,
+  IN page_num INT
+  )
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+	SELECT * FROM tbl_news LIMIT offsett,page_size;
+
+END$$
+
+
+

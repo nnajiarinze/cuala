@@ -31,8 +31,8 @@ public class NewsServiceImplementation implements NewsService {
     }
 
     @Override
-    public Response fetchPaginatedNews(int pageNum, int pageSize) {
-        return null;
+    public Response fetchPaginated(int pageNum, int pageSize) {
+       return newsDao.fetchPaginated(pageNum,pageSize);
     }
 
     @Override

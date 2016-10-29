@@ -13,6 +13,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,21 +24,16 @@ import java.util.Map;
 public class NewsDaoImplementation implements NewsDao {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall create, update,fetchAll, getUserByPhone,
-            getUserByUsername, getUserById, getUserByFBId, getUserByMatricNo;
+    private SimpleJdbcCall create, update,fetchAll, fetchPaginated;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.setResultsMapCaseInsensitive(true);
-        fetchAll = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_users").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
+        fetchAll = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_users").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
+        fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_fetch_paginated").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
         create = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_news");
         update = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_update_user");
-        getUserByPhone = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_user_by_phone").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
-        getUserByUsername = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_user_by_email").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
-        getUserById = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_user_by_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
-        getUserByFBId = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_user_by_facebook_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
-        getUserByMatricNo = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_user_by_matric_no").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
     }
 
     @Override
@@ -78,8 +75,18 @@ public class NewsDaoImplementation implements NewsDao {
     }
 
     @Override
-    public Response fetchPaginatedNews(int pageNum, int pageSize) {
-        return null;
+    public Response fetchPaginated(int pageNum, int pageSize) {
+        MapSqlParameterSource in = (new MapSqlParameterSource()).addValue("page_num", pageNum).addValue("page_size", pageSize);
+        Map<String, Object> m = fetchPaginated.execute(in);
+        News news =null;
+        List<News> newsList = new ArrayList<>();
+        Response<News> response =null;
+         if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
+            newsList = (List<News>) ((List) m.get("list"));
+             response = new Response<News>("00","Successful",newsList,news);
+        }
+
+        return response;
     }
 
     @Override
