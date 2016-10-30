@@ -42,7 +42,7 @@ public class UserDaoImplementation implements UserDao {
     }
 
     @Override
-    public Response<User> createUser(User user) {
+    public Response<User> create(User user) {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("fb_idd", user.getFbId())
                 .addValue("namee", user.getName())
@@ -86,7 +86,7 @@ public class UserDaoImplementation implements UserDao {
     }
 
     @Override
-    public Response getUserByUserId(int id) {
+    public Response getUserById(int id) {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("userId",id);
         Map<String, Object> m = getUserById.execute(in);

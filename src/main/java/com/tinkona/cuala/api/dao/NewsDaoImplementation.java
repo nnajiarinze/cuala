@@ -3,7 +3,6 @@ package com.tinkona.cuala.api.dao;
 import com.tinkona.cuala.api.dao.contract.NewsDao;
 import com.tinkona.cuala.api.model.News;
 import com.tinkona.cuala.api.model.Response;
-import com.tinkona.cuala.api.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,16 +23,17 @@ import java.util.Map;
 public class NewsDaoImplementation implements NewsDao {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall create, update,fetchAll, fetchPaginated;
+    private SimpleJdbcCall create, update,getNewsById, fetchPaginated,delete;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.setResultsMapCaseInsensitive(true);
-        fetchAll = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_users").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
-        fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_fetch_paginated").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
+        fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_fetch_paginated_news").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
+        getNewsById = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_news_by_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
         create = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_news");
-        update = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_update_user");
+        update = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_update_news");
+        delete = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_delete_news");
     }
 
     @Override
@@ -84,19 +84,86 @@ public class NewsDaoImplementation implements NewsDao {
          if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
             newsList = (List<News>) ((List) m.get("list"));
              response = new Response<News>("00","Successful",newsList,news);
-        }
+        }else{
+             response = new Response<News>("","End of List",newsList,news);
+         }
 
         return response;
     }
 
     @Override
     public Response getNewsById(int id) {
-        return null;
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("idd",id);
+        Map<String, Object> m = getNewsById.execute(in);
+        News news = null;
+        List<News> newsList = new ArrayList<>();
+        Response<News> response= null;
+        if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
+            news = (News)((List)m.get("list")).get(0);
+            response = new Response<News>("00","Operation Successful",newsList, news);
+            response.setNoOfRecords(((List) m.get("list")).size());
+        }else{
+            response = new Response<News>("00","No record",newsList,news);
+        }
+        return response;
     }
 
     @Override
-    public Response update(int id) {
-        return null;
+    public Response update(News news) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("idd",news.getId())
+                .addValue("headlinee", news.getHeadline())
+                .addValue("brieff", news.getBrief())
+                .addValue("descriptionn",news.getDescription())
+                .addValue("authorr", news.getAuthor())
+                .addValue("publish_datee", news.getPublishDate())
+                .addValue("tweet_textt",news.getTweetText())
+                .addValue("created_datee",news.getCreatedDate())
+                .addValue("tagss", news.getTags())
+                .addValue("imagee",news.getImage())
+                .addValue("deletedd", news.getDeleted());
+
+        Map<String, Object> m = null;
+        Response<News> response =null;
+
+        try{
+            m = update.execute(in);
+            if(Integer.parseInt(m.get("#update-count-1").toString()) >0){
+                response = new Response<News>("200","Updated",0);
+            }else{
+                response = new Response<News>("500","Item does not exist",0);
+            }
+
+        }catch(Exception ex){
+
+            response = new Response<News>("500","Failed to update",0);
+        }
+
+        return response;
+    }
+
+    @Override
+    public Response delete(int id) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("idd",id);
+        Map<String, Object> m = null;
+        Response<News> response =null;
+
+        try{
+            m = delete.execute(in);
+            if(Integer.parseInt(m.get("#update-count-1").toString()) >0){
+                response = new Response<News>("200","Deleted",0);
+            }else{
+                response = new Response<News>("500","Item does not exist",0);
+            }
+
+        }catch(Exception ex){
+
+            response = new Response<News>("500","Failed to delete",0);
+        }
+
+        return response;
     }
 
 

@@ -37,12 +37,17 @@ public class NewsServiceImplementation implements NewsService {
 
     @Override
     public Response getNewsById(int id) {
-        return null;
+        return newsDao.getNewsById(id);
     }
 
     @Override
-    public Response update(int id) {
-        return null;
+    public Response update(News news) {
+        return newsDao.update(news);
+    }
+
+    @Override
+    public Response delete(int id) {
+        return newsDao.delete(id);
     }
 
 

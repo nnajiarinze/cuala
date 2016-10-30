@@ -19,7 +19,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public Response createUser(User user) {
-        return userDao.createUser(user);
+        return userDao.create(user);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public Response getUserById(int id) {
-       return userDao.getUserByUserId(id);
+       return userDao.getUserById(id);
     }
 
     @Override

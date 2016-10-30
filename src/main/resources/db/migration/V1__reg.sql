@@ -32,6 +32,33 @@ CREATE TABLE tbl_news
  PRIMARY KEY (ID)
 );
 
+
+CREATE TABLE tbl_events
+(
+ id int NOT NULL AUTO_INCREMENT,
+ title varchar(250) NOT NULL,
+ location varchar(250) NOT NULL,
+ `date` DATE NOT NULL,
+ image varchar(1000) NULL,
+ description TEXT NOT NULL,
+ created_date DATE NOT NULL,
+ deleted BOOLEAN default FALSE,
+ last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (ID)
+);
+
+
+CREATE TABLE tbl_events_invitations
+(
+ id int NOT NULL AUTO_INCREMENT,
+ user_id INT NOT NULL,
+ event_id INT NOT NULL,
+ attending BOOLEAN NOT NULL,
+ last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (ID)
+);
+
+
 DROP procedure IF exists psp_retrieve_users;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_users()
@@ -144,10 +171,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_update_user (
   IN coursee varchar(255),
   IN occupationn varchar(255)
   )
-
+BEGIN
      UPDATE tbl_users SET fb_id=fb_idd ,name=namee, email=emaill,phone=phonee,matric_no=matric_noo,reg_no=reg_noo,grad_year=grad_yearr,
-     course=coursee,occupation=occupationn WHERE id=idd
-
+     course=coursee,occupation=occupationn WHERE id=idd;
+END$$
 
 DELIMITER ;
 
@@ -175,20 +202,116 @@ BEGIN
 END$$
 
 DELIMITER ;
-
-
-DROP procedure IF exists psp_fetch_paginated;
+DROP procedure IF exists psp_fetch_paginated_news;
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE psp_fetch_paginated (
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_fetch_paginated_news (
   IN page_size INT,
   IN page_num INT
   )
 BEGIN
     DECLARE offsett INT;
     SET offsett = (page_num - 1) * page_size;
-	SELECT * FROM tbl_news LIMIT offsett,page_size;
+	SELECT * FROM tbl_news WHERE deleted=false LIMIT offsett,page_size;
 
 END$$
+
+DELIMITER ;
+DROP procedure IF exists psp_get_news_by_id;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_news_by_id (
+  IN idd INT
+  )
+BEGIN
+
+	SELECT * FROM tbl_news WHERE id=idd;
+
+END$$
+
+
+DELIMITER ;
+DROP procedure IF exists psp_update_news;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_update_news (
+  IN idd INT,
+  IN headlinee varchar(250),
+  IN brieff varchar(150),
+  IN descriptionn TEXT,
+  IN authorr varchar(150),
+  IN publish_datee DATE,
+  IN tweet_textt varchar(140),
+  IN created_datee DATE,
+  IN tagss TEXT,
+  IN imagee varchar(1000),
+  IN deletedd TINYINT
+ )
+BEGIN
+    UPDATE tbl_news SET headline=headlinee, brief=brieff, description= descriptionn, author=authorr, publish_date= publish_datee,tweet_text=tweet_textt,created_date=created_datee,
+    tags=tagss,image =imagee,deleted=deletedd WHERE id=idd;
+
+END$$
+
+
+DELIMITER ;
+DROP procedure IF exists psp_delete_news;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_delete_news (
+  IN idd INT
+  )
+BEGIN
+        UPDATE tbl_news SET deleted=true WHERE id=idd;
+
+END$$
+
+
+DELIMITER ;
+DROP procedure IF exists psp_create_event;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_event (
+  IN titlee varchar(250),
+  IN locationn varchar(250),
+  IN datee DATE,
+  IN imagee varchar(1000),
+  IN descriptionn TEXT,
+  IN created_datee DATE,
+  OUT id INT
+  )
+BEGIN
+        INSERT INTO tbl_events (title,location,`date`,image,description,created_date)
+         VALUES (titlee,locationn,datee,imagee,descriptionn,created_datee);
+
+        SET id = LAST_INSERT_ID();
+END$$
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_event;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_event (
+  IN idd INT
+  )
+BEGIN
+    SELECT * FROM tbl_events WHERE id=idd;
+END$$
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_paginated_events;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_paginated_events (
+  IN page_size INT,
+  IN page_num INT
+  )
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+	SELECT * FROM tbl_events WHERE deleted=false LIMIT offsett,page_size;
+
+END$$
+
+
 
 
 
