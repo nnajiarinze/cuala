@@ -286,9 +286,9 @@ END$$
 
 
 DELIMITER ;
-DROP procedure IF exists psp_get_event;
+DROP procedure IF exists psp_get_event_by_id;
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_event (
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_event_by_id (
   IN idd INT
   )
 BEGIN

@@ -27,5 +27,19 @@ public class EventController {
     }
 
 
+    @RequestMapping(value = "/paginate",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<Event> fetchPaginated(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return eventService.fetchPaginated(pageNum,pageSize);
+    }
+
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<Event> getEventById(@PathVariable Integer id){
+
+        return eventService.getEventById(id);
+    }
+
+
 
 }

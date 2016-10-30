@@ -2,7 +2,6 @@ package com.tinkona.cuala.api.dao;
 
 import com.tinkona.cuala.api.dao.contract.EventDao;
 import com.tinkona.cuala.api.model.Event;
-import com.tinkona.cuala.api.model.News;
 import com.tinkona.cuala.api.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -24,17 +23,17 @@ import java.util.Map;
 public class EventDaoImplementation implements EventDao {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall create, update,getNewsById, fetchPaginated,delete;
+    private SimpleJdbcCall create, update, getEventById, fetchPaginated,delete;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.setResultsMapCaseInsensitive(true);
-        fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_fetch_paginated_events").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
-        getNewsById = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_news_by_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
+        fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_paginated_events").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(Event.class));
+        getEventById = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_event_by_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(Event.class));
         create = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_event");
-        update = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_update_news");
-        delete = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_delete_news");
+        update = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_update_event");
+        delete = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_delete_event");
     }
 
     @Override
@@ -58,7 +57,7 @@ public class EventDaoImplementation implements EventDao {
             response = new Response<Event>("00","Creation Successful",eventId);
         }catch(Exception ex){
 
-            response = new Response<Event>("500","News Not Created "+ex.getCause().getMessage(),0);
+            response = new Response<Event>("500","Event Not Created "+ex.getCause().getMessage(),0);
         }
 
 
@@ -73,12 +72,37 @@ public class EventDaoImplementation implements EventDao {
 
     @Override
     public Response fetchPaginated(int pageNum, int pageSize) {
-        return null;
+        MapSqlParameterSource in = (new MapSqlParameterSource()).addValue("page_num", pageNum).addValue("page_size", pageSize);
+        Map<String, Object> m = fetchPaginated.execute(in);
+        Event event =null;
+        List<Event> eventsList = new ArrayList<>();
+        Response<Event> response =null;
+        if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
+            eventsList = (List<Event>) ((List) m.get("list"));
+            response = new Response<Event>("00","Successful",eventsList,event);
+        }else{
+            response = new Response<Event>("","End of List",eventsList,event);
+        }
+
+        return response;
     }
 
     @Override
     public Response getEventById(int id) {
-        return null;
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("idd",id);
+        Map<String, Object> m = getEventById.execute(in);
+        Event event = null;
+        List<Event> eventsList = new ArrayList<>();
+        Response<Event> response= null;
+        if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
+            event = (Event)((List)m.get("list")).get(0);
+            response = new Response<Event>("00","Successful",eventsList, event);
+            response.setNoOfRecords(((List) m.get("list")).size());
+        }else{
+            response = new Response<Event>("00","No record",eventsList,event);
+        }
+        return response;
     }
 
     @Override
