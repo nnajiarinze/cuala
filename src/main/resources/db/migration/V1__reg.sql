@@ -58,6 +58,17 @@ CREATE TABLE tbl_events_invitations
  PRIMARY KEY (ID)
 );
 
+CREATE TABLE tbl_news_comments
+(
+ id int NOT NULL AUTO_INCREMENT,
+ news_id INT NOT NULL,
+ user_id INT NOT NULL,
+ comment TEXT NOT NULL,
+ last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (ID)
+);
+
+
 
 DROP procedure IF exists psp_retrieve_users;
 DELIMITER $$
@@ -342,4 +353,23 @@ BEGIN
       SELECT * FROM tbl_events_invitations WHERE event_id=event_idd AND user_id = user_idd;
 
 END$$
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_create_news_comment;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_news_comment (
+  IN event_idd INT,
+  IN user_idd INT,
+  IN commentt TEXT,
+  OUT id INT
+  )
+BEGIN
+        INSERT INTO tbl_news_comments (event_id,user_id,comment)
+         VALUES (event_idd,user_idd,commentt);
+
+        SET id = LAST_INSERT_ID();
+END$$
+
 

@@ -3,6 +3,7 @@ package com.tinkona.cuala.api.service;
 import com.tinkona.cuala.api.dao.contract.NewsDao;
 import com.tinkona.cuala.api.dao.contract.UserDao;
 import com.tinkona.cuala.api.model.News;
+import com.tinkona.cuala.api.model.NewsComment;
 import com.tinkona.cuala.api.model.Response;
 import com.tinkona.cuala.api.model.User;
 import com.tinkona.cuala.api.service.contract.NewsService;
@@ -23,6 +24,11 @@ public class NewsServiceImplementation implements NewsService {
     @Override
     public Response create(News news) {
         return newsDao.create(news);
+    }
+
+    @Override
+    public Response createComment(NewsComment newsComment) {
+        return newsDao.createComment(newsComment);
     }
 
     @Override

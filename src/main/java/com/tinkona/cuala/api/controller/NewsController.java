@@ -1,6 +1,7 @@
 package com.tinkona.cuala.api.controller;
 
 import com.tinkona.cuala.api.model.News;
+import com.tinkona.cuala.api.model.NewsComment;
 import com.tinkona.cuala.api.model.Response;
 import com.tinkona.cuala.api.service.contract.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,12 @@ public class NewsController {
     public @ResponseBody
     Response<News> create(@RequestBody News news){
         return newsService.create(news);
+    }
+
+    @RequestMapping(value = "/comment",method = RequestMethod.POST)
+    public @ResponseBody
+    Response<NewsComment> create_comment(@RequestBody NewsComment newsComment){
+        return newsService.createComment(newsComment);
     }
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)

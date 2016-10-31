@@ -2,6 +2,7 @@ package com.tinkona.cuala.api.dao;
 
 import com.tinkona.cuala.api.dao.contract.NewsDao;
 import com.tinkona.cuala.api.model.News;
+import com.tinkona.cuala.api.model.NewsComment;
 import com.tinkona.cuala.api.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class NewsDaoImplementation implements NewsDao {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall create, update,getNewsById, fetchPaginated,delete;
+    private SimpleJdbcCall create, update,getNewsById, fetchPaginated,delete,create_comment;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -32,6 +33,7 @@ public class NewsDaoImplementation implements NewsDao {
         fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_fetch_paginated_news").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
         getNewsById = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_news_by_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
         create = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_news");
+        create_comment = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_news_comment");
         update = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_update_news");
         delete = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_delete_news");
     }
@@ -62,6 +64,32 @@ public class NewsDaoImplementation implements NewsDao {
         }catch(Exception ex){
 
             response = new Response<News>("500","News Not Created "+ex.getCause().getMessage(),0);
+        }
+
+
+
+        return response;
+    }
+
+    @Override
+    public Response<NewsComment> createComment(NewsComment newsComment) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("event_idd", newsComment.getEventId())
+                .addValue("user_idd", newsComment.getUserId())
+                .addValue("commentt", newsComment.getComment());
+        Map<String, Object> m = null;
+        Response<NewsComment> response =null;
+
+        try{
+            m = create_comment.execute(in);
+            int newsId =0;
+            if(m!= null) {
+                newsId = Integer.parseInt(String.valueOf(m.get("id")));
+            }
+            response = new Response<NewsComment>("00","Creation Successful",newsId);
+        }catch(Exception ex){
+
+            response = new Response<NewsComment>("500","Comment Not Created "+ex.getCause().getMessage(),0);
         }
 
 
