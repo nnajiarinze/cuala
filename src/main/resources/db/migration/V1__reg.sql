@@ -313,5 +313,33 @@ END$$
 
 
 
+DELIMITER ;
+DROP procedure IF exists psp_create_event_invitation;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_event_invitation (
+  IN event_idd INT,
+  IN user_idd INT,
+  IN attendingg TINYINT,
+  OUT id INT
+  )
+BEGIN
+        INSERT INTO tbl_events_invitations (event_id,user_id,attending)
+         VALUES (event_idd,user_idd,attendingg);
 
+        SET id = LAST_INSERT_ID();
+END$$
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_user_event_invitation_response;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_user_event_invitation_response (
+  IN event_idd INT,
+  IN user_idd INT
+  )
+BEGIN
+      SELECT * FROM tbl_events_invitations WHERE event_id=event_idd AND user_id = user_idd;
+
+END$$
 

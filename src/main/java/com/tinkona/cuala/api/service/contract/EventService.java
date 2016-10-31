@@ -12,4 +12,6 @@ public interface EventService {
     public Response getEventById(int id);
     public Response update(Event event);
     public Response delete(int id);
+    public Response createInvitationResponse(Integer eventId, Integer userId, Boolean response);
+    Response getInvitationResponse(Integer eventId, Integer userId);
 }

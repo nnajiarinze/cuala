@@ -2,6 +2,7 @@ package com.tinkona.cuala.api.dao;
 
 import com.tinkona.cuala.api.dao.contract.EventDao;
 import com.tinkona.cuala.api.model.Event;
+import com.tinkona.cuala.api.model.EventInvitation;
 import com.tinkona.cuala.api.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class EventDaoImplementation implements EventDao {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall create, update, getEventById, fetchPaginated,delete;
+    private SimpleJdbcCall create, update, getEventById, fetchPaginated,delete,createInvitationResponse,getInvitationResponse;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -31,7 +32,9 @@ public class EventDaoImplementation implements EventDao {
         jdbcTemplate.setResultsMapCaseInsensitive(true);
         fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_paginated_events").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(Event.class));
         getEventById = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_event_by_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(Event.class));
+        getInvitationResponse = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_user_event_invitation_response").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(EventInvitation.class));
         create = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_event");
+        createInvitationResponse = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_event_invitation");
         update = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_update_event");
         delete = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_delete_event");
     }
@@ -115,5 +118,47 @@ public class EventDaoImplementation implements EventDao {
         return null;
     }
 
+    @Override
+    public Response createInvitationResponse(Integer eventId, Integer userId, Boolean attending) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("event_idd",eventId)
+                .addValue("user_idd", userId)
+                .addValue("attendingg", attending);
+        Map<String, Object> m = null;
+        Response<Event> response =null;
 
+        try{
+            m = createInvitationResponse.execute(in);
+            int eventInvitationId =0;
+            if(m!= null) {
+                eventInvitationId = Integer.parseInt(String.valueOf(m.get("id")));
+            }
+            response = new Response<Event>("00","Successful",eventInvitationId);
+        }catch(Exception ex){
+
+            response = new Response<Event>("500","Unsuccessful"+ex.getCause().getMessage(),0);
+        }
+
+
+        return response;
+    }
+
+    @Override
+    public Response getInvitationResponse(Integer eventId, Integer userId) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("event_idd",eventId)
+                .addValue("user_idd",userId);
+        Map<String, Object> m = getInvitationResponse.execute(in);
+        EventInvitation eventInvitation = null;
+        List<EventInvitation> eventInvitations = new ArrayList<>();
+        Response<EventInvitation> response= null;
+        if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
+            eventInvitation = (EventInvitation)((List)m.get("list")).get(0);
+            response = new Response<EventInvitation>("00","Successful",eventInvitations, eventInvitation);
+            response.setNoOfRecords(((List) m.get("list")).size());
+        }else{
+            response = new Response<EventInvitation>("00","No record",eventInvitations,eventInvitation);
+        }
+        return response;
+    }
 }

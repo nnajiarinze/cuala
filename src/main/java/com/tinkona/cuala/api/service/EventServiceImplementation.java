@@ -43,5 +43,15 @@ public class EventServiceImplementation implements EventService {
         return eventDao.delete(id);
     }
 
+    @Override
+    public Response createInvitationResponse(Integer eventId, Integer userId, Boolean response) {
+        return eventDao.createInvitationResponse(eventId,userId,response);
+    }
+
+    @Override
+    public Response getInvitationResponse(Integer eventId, Integer userId) {
+        return eventDao.getInvitationResponse(eventId,userId);
+    }
+
 
 }

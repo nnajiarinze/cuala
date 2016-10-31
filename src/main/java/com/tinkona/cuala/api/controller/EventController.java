@@ -1,6 +1,7 @@
 package com.tinkona.cuala.api.controller;
 
 import com.tinkona.cuala.api.model.Event;
+import com.tinkona.cuala.api.model.EventInvitation;
 import com.tinkona.cuala.api.model.Response;
 import com.tinkona.cuala.api.service.contract.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,20 @@ public class EventController {
 
         return eventService.getEventById(id);
     }
+
+    @RequestMapping(value = "/{eventId}/{userId}/{response}",method = RequestMethod.POST)
+    public @ResponseBody
+    Response<Event> eventInvitation(@PathVariable Integer eventId, @PathVariable Integer userId,@PathVariable Boolean response){
+        return eventService.createInvitationResponse(eventId,userId,response);
+    }
+
+
+    @RequestMapping(value = "/{eventId}/{userId}",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<EventInvitation> getInvitationResponse(@PathVariable Integer eventId, @PathVariable Integer userId){
+        return eventService.getInvitationResponse(eventId,userId);
+    }
+
 
 
 
