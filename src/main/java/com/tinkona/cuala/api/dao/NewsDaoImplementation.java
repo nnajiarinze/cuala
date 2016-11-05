@@ -74,7 +74,7 @@ public class NewsDaoImplementation implements NewsDao {
     @Override
     public Response<NewsComment> createComment(NewsComment newsComment) {
         SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("event_idd", newsComment.getEventId())
+                .addValue("news_idd", newsComment.getNewsId())
                 .addValue("user_idd", newsComment.getUserId())
                 .addValue("commentt", newsComment.getComment());
         Map<String, Object> m = null;

@@ -70,6 +70,31 @@ CREATE TABLE tbl_news_comments
 
 
 
+
+
+CREATE TABLE tbl_jobs
+(
+ id INT NOT NULL AUTO_INCREMENT,
+ category_id INT NOT NULL,
+ title varchar(255) NOT NULL,
+ location varchar(255) NOT NULL,
+ description TEXT NOT NULL,
+ created_date DATE NOT NULL,
+ end_date DATE NOT NULL,
+ last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (ID)
+);
+
+
+CREATE TABLE tbl_job_category
+(
+ id INT NOT NULL AUTO_INCREMENT,
+ name varchar(255) NOT NULL UNIQUE,
+ PRIMARY KEY (ID)
+)
+
+
+
 DROP procedure IF exists psp_retrieve_users;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_users()
@@ -318,7 +343,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_paginated_events (
 BEGIN
     DECLARE offsett INT;
     SET offsett = (page_num - 1) * page_size;
-	SELECT * FROM tbl_events WHERE deleted=false LIMIT offsett,page_size;
+	SELECT * FROM tbl_events WHERE deleted=false ORDER BY id DESC LIMIT offsett,page_size;
 
 END$$
 
@@ -360,16 +385,131 @@ DELIMITER ;
 DROP procedure IF exists psp_create_news_comment;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_news_comment (
-  IN event_idd INT,
+  IN news_idd INT,
   IN user_idd INT,
   IN commentt TEXT,
   OUT id INT
   )
 BEGIN
-        INSERT INTO tbl_news_comments (event_id,user_id,comment)
-         VALUES (event_idd,user_idd,commentt);
+        INSERT INTO tbl_news_comments (news_id,user_id,comment)
+         VALUES (news_idd,user_idd,commentt);
 
         SET id = LAST_INSERT_ID();
 END$$
 
 
+
+DELIMITER ;
+DROP procedure IF exists psp_create_job;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_job (
+  IN category_idd INT,
+  IN titlee varchar(255),
+  IN locationn varchar(255),
+  IN descriptionn TEXT,
+  IN created_datee DATE,
+  IN end_datee DATE,
+  OUT id INT
+  )
+BEGIN
+        INSERT INTO tbl_jobs (category_id,title,location,description,created_date,end_date)
+         VALUES (category_idd,titlee,locationn,descriptionn,created_datee,end_datee);
+
+        SET id = LAST_INSERT_ID();
+END$$
+
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_job_by_id;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_job_by_id (
+  IN idd INT
+  )
+BEGIN
+    SELECT * FROM tbl_jobs WHERE id=idd;
+END$$
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_paginated_jobs;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_paginated_jobs (
+  IN page_size INT,
+  IN page_num INT
+  )
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+	SELECT * FROM tbl_jobs ORDER BY id desc LIMIT offsett,page_size;
+
+END$$
+
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_update_job;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_update_job (
+  IN idd INT,
+  IN category_idd INT,
+  IN titlee varchar(255),
+  IN locationn varchar(255),
+  IN descriptionn TEXT,
+  IN created_datee DATE,
+  IN end_datee DATE
+  )
+BEGIN
+        UPDATE tbl_jobs SET category_id=category_idd,title=titlee, location=locationn, description=descriptionn, created_date=created_datee, end_date=end_datee WHERE id=idd;
+END$$
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_create_job_category;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_job_category (
+  IN namee varchar(255),
+  OUT id INT
+  )
+BEGIN
+        INSERT INTO tbl_job_category (name) VALUES (namee);
+
+        SET id = LAST_INSERT_ID();
+END$$
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_job_categories;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_job_categories ()
+BEGIN
+    SELECT * FROM tbl_job_category;
+
+END$$
+
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_jobs_per_category;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_jobs_per_category (
+  IN category_idd INT,
+   IN page_size INT,
+    IN page_num INT
+  )
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+	SELECT * FROM tbl_jobs WHERE category_id=category_idd ORDER BY id desc LIMIT offsett,page_size;
+
+END$$

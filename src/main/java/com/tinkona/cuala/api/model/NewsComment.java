@@ -5,7 +5,7 @@ package com.tinkona.cuala.api.model;
  */
 public class NewsComment {
     private int id;
-    private int eventId;
+    private int newsId;
     private int userId;
     private String comment;
     private String lastModifiedDate;
@@ -13,9 +13,9 @@ public class NewsComment {
     public NewsComment() {
     }
 
-    public NewsComment(int id,int eventId, int userId, String comment, String lastModifiedDate) {
+    public NewsComment(int id,int newsId, int userId, String comment, String lastModifiedDate) {
         this.id = id;
-        this.eventId=eventId;
+        this.newsId=newsId;
         this.userId = userId;
         this.comment = comment;
         this.lastModifiedDate = lastModifiedDate;
@@ -31,12 +31,12 @@ public class NewsComment {
         this.id = id;
     }
 
-    public int getEventId() {
-        return eventId;
+    public int getNewsId() {
+        return newsId;
     }
 
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
+    public void setNewsId(int newsId) {
+        this.newsId = newsId;
     }
 
     public int getUserId() {
