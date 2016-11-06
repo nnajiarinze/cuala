@@ -21,7 +21,7 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    @RequestMapping(value = {"/",""},method = RequestMethod.POST)
     public @ResponseBody
     Response<User> create(@RequestBody User user){
         return userService.createUser(user);

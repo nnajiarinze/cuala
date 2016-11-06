@@ -53,5 +53,11 @@ public class EventServiceImplementation implements EventService {
         return eventDao.getInvitationResponse(eventId,userId);
     }
 
+    @Override
+    public Response getEventsByDate(String date) {
+        return eventDao.getEventsByDate(date);
+
+    }
+
 
 }

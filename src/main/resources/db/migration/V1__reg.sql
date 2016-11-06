@@ -247,7 +247,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_fetch_paginated_news (
 BEGIN
     DECLARE offsett INT;
     SET offsett = (page_num - 1) * page_size;
-	SELECT * FROM tbl_news WHERE deleted=false LIMIT offsett,page_size;
+	SELECT * FROM tbl_news WHERE deleted=false ORDER BY id desc LIMIT offsett,page_size;
 
 END$$
 
@@ -513,3 +513,14 @@ BEGIN
 	SELECT * FROM tbl_jobs WHERE category_id=category_idd ORDER BY id desc LIMIT offsett,page_size;
 
 END$$
+
+DELIMITER ;
+DROP procedure IF exists psp_get_event_by_date;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_event_by_date (
+  IN datee DATE
+  )
+BEGIN
+    SELECT * FROM tbl_events WHERE date=datee ORDER BY id desc;
+END$$
+

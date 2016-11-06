@@ -21,7 +21,7 @@ public class EventController {
     }
 
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    @RequestMapping(value = {"/",""},method = RequestMethod.POST)
     public @ResponseBody
     Response<Event> create(@RequestBody Event event){
         return eventService.create(event);
@@ -39,6 +39,13 @@ public class EventController {
     Response<Event> getEventById(@PathVariable Integer id){
 
         return eventService.getEventById(id);
+    }
+
+    @RequestMapping(value = "",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<Event> getEventByDate(@RequestParam(value = "date") String date){
+
+        return eventService.getEventsByDate(date);
     }
 
     @RequestMapping(value = "/{eventId}/{userId}/{response}",method = RequestMethod.POST)

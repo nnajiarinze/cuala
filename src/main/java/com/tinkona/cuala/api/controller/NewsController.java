@@ -22,7 +22,7 @@ public class NewsController {
     }
 
 
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    @RequestMapping(value = {"/",""},method = RequestMethod.POST)
     public @ResponseBody
     Response<News> create(@RequestBody News news){
         return newsService.create(news);
