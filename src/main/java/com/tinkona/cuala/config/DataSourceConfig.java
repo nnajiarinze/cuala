@@ -22,14 +22,6 @@ public class DataSourceConfig {
         ds.setMaximumPoolSize(maxPoolSize);
 
 
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(ds);
-        flyway.setValidateOnMigrate(false);
-        flyway.setBaselineOnMigrate(true);
-        flyway.repair();
-        flyway.migrate();
-
-
         return ds;
     }
 }

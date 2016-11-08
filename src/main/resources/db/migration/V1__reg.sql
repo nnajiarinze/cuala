@@ -1,10 +1,10 @@
 USE cuala;
 
-CREATE TABLE tbl_users
+CREATE TABLE bf_tbl_users
 (
 id int NOT NULL AUTO_INCREMENT,
 fb_id varchar(30) NOT NULL UNIQUE,
-name varchar(255) NOT NULL,
+`name` varchar(255) NOT NULL,
 email varchar(255) NOT NULL UNIQUE,
 phone varchar(255)  NOT NULL UNIQUE,
 matric_no varchar(11)  NOT NULL UNIQUE,
@@ -15,7 +15,7 @@ occupation varchar(255),
 PRIMARY KEY (ID)
 );
 
-CREATE TABLE tbl_news
+CREATE TABLE bf_tbl_news
 (
  id int NOT NULL AUTO_INCREMENT,
  headline varchar(250) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE tbl_news
 );
 
 
-CREATE TABLE tbl_events
+CREATE TABLE bf_tbl_events
 (
  id int NOT NULL AUTO_INCREMENT,
  title varchar(250) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE tbl_events
 );
 
 
-CREATE TABLE tbl_events_invitations
+CREATE TABLE bf_tbl_events_invitations
 (
  id int NOT NULL AUTO_INCREMENT,
  user_id INT NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE tbl_events_invitations
  PRIMARY KEY (ID)
 );
 
-CREATE TABLE tbl_news_comments
+CREATE TABLE bf_tbl_news_comments
 (
  id int NOT NULL AUTO_INCREMENT,
  news_id INT NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE tbl_news_comments
 
 
 
-CREATE TABLE tbl_jobs
+CREATE TABLE bf_tbl_jobs
 (
  id INT NOT NULL AUTO_INCREMENT,
  category_id INT NOT NULL,
@@ -86,10 +86,10 @@ CREATE TABLE tbl_jobs
 );
 
 
-CREATE TABLE tbl_job_category
+CREATE TABLE bf_tbl_job_category
 (
  id INT NOT NULL AUTO_INCREMENT,
- name varchar(255) NOT NULL UNIQUE,
+ `name` varchar(255) NOT NULL UNIQUE,
  PRIMARY KEY (ID)
 )
 
@@ -99,7 +99,7 @@ DROP procedure IF exists psp_retrieve_users;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_users()
 BEGIN
-  SELECT * FROM tbl_users;
+  SELECT * FROM bf_tbl_users;
 END$$
 
 DELIMITER ;
@@ -111,7 +111,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_user_by_id (
   IN userId INT
   )
 BEGIN
-	SELECT * FROM tbl_users WHERE id=userId;
+	SELECT * FROM bf_tbl_users WHERE id=userId;
 END$$
 
 DELIMITER ;
@@ -124,7 +124,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_user_by_email (
   IN userEmail VARCHAR(50)
   )
 BEGIN
-	SELECT * FROM tbl_users WHERE email=userEmail;
+	SELECT * FROM bf_tbl_users WHERE email=userEmail;
 END$$
 
 DELIMITER ;
@@ -136,7 +136,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_user_by_phone (
   IN mobileNumber VARCHAR(50)
   )
 BEGIN
-	SELECT * FROM tbl_users WHERE phone=mobileNumber;
+	SELECT * FROM bf_tbl_users WHERE phone=mobileNumber;
 END$$
 
 DELIMITER ;
@@ -151,7 +151,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_user_by_matric_no (
   IN matricNumber VARCHAR(50)
   )
 BEGIN
-	SELECT * FROM tbl_users WHERE matric_no=matricNumber;
+	SELECT * FROM bf_tbl_users WHERE matric_no=matricNumber;
 END$$
 
 DELIMITER ;
@@ -163,7 +163,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_user_by_facebook_id (
   IN facebook_id varchar(30)
   )
 BEGIN
-	SELECT * FROM tbl_users WHERE fb_id=facebook_id;
+	SELECT * FROM bf_tbl_users WHERE fb_id=facebook_id;
 END$$
 
 DELIMITER ;
@@ -185,7 +185,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_user (
   OUT id INT
   )
 BEGIN
-	INSERT INTO tbl_users(fb_id,name,email,phone,matric_no,reg_no,grad_year,course,occupation)
+	INSERT INTO bf_tbl_users(fb_id,`name`,email,phone,matric_no,reg_no,grad_year,course,occupation)
     VALUES(fb_idd,namee,emaill,phonee,matric_noo,reg_noo,grad_yearr,coursee,occupationn);
 
 	SET id = LAST_INSERT_ID();
@@ -208,7 +208,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_update_user (
   IN occupationn varchar(255)
   )
 BEGIN
-     UPDATE tbl_users SET fb_id=fb_idd ,name=namee, email=emaill,phone=phonee,matric_no=matric_noo,reg_no=reg_noo,grad_year=grad_yearr,
+     UPDATE bf_tbl_users SET fb_id=fb_idd ,`name`=namee, email=emaill,phone=phonee,matric_no=matric_noo,reg_no=reg_noo,grad_year=grad_yearr,
      course=coursee,occupation=occupationn WHERE id=idd;
 END$$
 
@@ -231,7 +231,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_news (
   OUT id INT
   )
 BEGIN
-	INSERT INTO tbl_news(headline,brief,description,author,publish_date,tweet_text,created_date,tags,image,deleted)
+	INSERT INTO bf_tbl_news(headline,brief,description,author,publish_date,tweet_text,created_date,tags,image,deleted)
     VALUES(headlinee,brieff,descriptionn,authorr,publish_datee,tweet_textt,created_datee,tagss,imagee,deletedd);
 
 	SET id = LAST_INSERT_ID();
@@ -247,7 +247,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_fetch_paginated_news (
 BEGIN
     DECLARE offsett INT;
     SET offsett = (page_num - 1) * page_size;
-	SELECT * FROM tbl_news WHERE deleted=false ORDER BY id desc LIMIT offsett,page_size;
+	SELECT * FROM bf_tbl_news WHERE deleted=false ORDER BY id desc LIMIT offsett,page_size;
 
 END$$
 
@@ -259,7 +259,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_news_by_id (
   )
 BEGIN
 
-	SELECT * FROM tbl_news WHERE id=idd;
+	SELECT * FROM bf_tbl_news WHERE id=idd;
 
 END$$
 
@@ -281,7 +281,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_update_news (
   IN deletedd TINYINT
  )
 BEGIN
-    UPDATE tbl_news SET headline=headlinee, brief=brieff, description= descriptionn, author=authorr, publish_date= publish_datee,tweet_text=tweet_textt,created_date=created_datee,
+    UPDATE bf_tbl_news SET headline=headlinee, brief=brieff, description= descriptionn, author=authorr, publish_date= publish_datee,tweet_text=tweet_textt,created_date=created_datee,
     tags=tagss,image =imagee,deleted=deletedd WHERE id=idd;
 
 END$$
@@ -294,7 +294,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_delete_news (
   IN idd INT
   )
 BEGIN
-        UPDATE tbl_news SET deleted=true WHERE id=idd;
+        UPDATE bf_tbl_news SET deleted=true WHERE id=idd;
 
 END$$
 
@@ -312,7 +312,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_event (
   OUT id INT
   )
 BEGIN
-        INSERT INTO tbl_events (title,location,`date`,image,description,created_date)
+        INSERT INTO bf_tbl_events (title,location,`date`,image,description,created_date)
          VALUES (titlee,locationn,datee,imagee,descriptionn,created_datee);
 
         SET id = LAST_INSERT_ID();
@@ -328,7 +328,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_event_by_id (
   IN idd INT
   )
 BEGIN
-    SELECT * FROM tbl_events WHERE id=idd;
+    SELECT * FROM bf_tbl_events WHERE id=idd;
 END$$
 
 
@@ -343,7 +343,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_paginated_events (
 BEGIN
     DECLARE offsett INT;
     SET offsett = (page_num - 1) * page_size;
-	SELECT * FROM tbl_events WHERE deleted=false ORDER BY id DESC LIMIT offsett,page_size;
+	SELECT * FROM bf_tbl_events WHERE deleted=false ORDER BY id DESC LIMIT offsett,page_size;
 
 END$$
 
@@ -359,7 +359,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_event_invitation (
   OUT id INT
   )
 BEGIN
-        INSERT INTO tbl_events_invitations (event_id,user_id,attending)
+        INSERT INTO bf_tbl_events_invitations (event_id,user_id,attending)
          VALUES (event_idd,user_idd,attendingg);
 
         SET id = LAST_INSERT_ID();
@@ -375,7 +375,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_user_event_invitation_respon
   IN user_idd INT
   )
 BEGIN
-      SELECT * FROM tbl_events_invitations WHERE event_id=event_idd AND user_id = user_idd;
+      SELECT * FROM bf_tbl_events_invitations WHERE event_id=event_idd AND user_id = user_idd;
 
 END$$
 
@@ -391,7 +391,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_news_comment (
   OUT id INT
   )
 BEGIN
-        INSERT INTO tbl_news_comments (news_id,user_id,comment)
+        INSERT INTO bf_tbl_news_comments (news_id,user_id,comment)
          VALUES (news_idd,user_idd,commentt);
 
         SET id = LAST_INSERT_ID();
@@ -412,7 +412,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_job (
   OUT id INT
   )
 BEGIN
-        INSERT INTO tbl_jobs (category_id,title,location,description,created_date,end_date)
+        INSERT INTO bf_tbl_jobs (category_id,title,location,description,created_date,end_date)
          VALUES (category_idd,titlee,locationn,descriptionn,created_datee,end_datee);
 
         SET id = LAST_INSERT_ID();
@@ -429,7 +429,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_job_by_id (
   IN idd INT
   )
 BEGIN
-    SELECT * FROM tbl_jobs WHERE id=idd;
+    SELECT * FROM bf_tbl_jobs WHERE id=idd;
 END$$
 
 
@@ -445,7 +445,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_paginated_jobs (
 BEGIN
     DECLARE offsett INT;
     SET offsett = (page_num - 1) * page_size;
-	SELECT * FROM tbl_jobs ORDER BY id desc LIMIT offsett,page_size;
+	SELECT * FROM bf_tbl_jobs ORDER BY id desc LIMIT offsett,page_size;
 
 END$$
 
@@ -466,7 +466,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_update_job (
   IN end_datee DATE
   )
 BEGIN
-        UPDATE tbl_jobs SET category_id=category_idd,title=titlee, location=locationn, description=descriptionn, created_date=created_datee, end_date=end_datee WHERE id=idd;
+        UPDATE bf_tbl_jobs SET category_id=category_idd,title=titlee, location=locationn, description=descriptionn, created_date=created_datee, end_date=end_datee WHERE id=idd;
 END$$
 
 
@@ -480,7 +480,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_job_category (
   OUT id INT
   )
 BEGIN
-        INSERT INTO tbl_job_category (name) VALUES (namee);
+        INSERT INTO bf_tbl_job_category (`name`) VALUES (namee);
 
         SET id = LAST_INSERT_ID();
 END$$
@@ -491,7 +491,7 @@ DROP procedure IF exists psp_get_job_categories;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_job_categories ()
 BEGIN
-    SELECT * FROM tbl_job_category;
+    SELECT * FROM bf_tbl_job_category;
 
 END$$
 
@@ -510,7 +510,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_jobs_per_category (
 BEGIN
     DECLARE offsett INT;
     SET offsett = (page_num - 1) * page_size;
-	SELECT * FROM tbl_jobs WHERE category_id=category_idd ORDER BY id desc LIMIT offsett,page_size;
+	SELECT * FROM bf_tbl_jobs WHERE category_id=category_idd ORDER BY id desc LIMIT offsett,page_size;
 
 END$$
 
@@ -521,6 +521,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_event_by_date (
   IN datee DATE
   )
 BEGIN
-    SELECT * FROM tbl_events WHERE date=datee ORDER BY id desc;
+    SELECT * FROM bf_tbl_events WHERE date=datee ORDER BY id desc;
 END$$
 
