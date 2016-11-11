@@ -7,7 +7,7 @@ import com.tinkona.cuala.api.model.User;
  */
 public interface UserDao {
     public Response create(User user);
-    public Response fetchAllUsers();
+    public Response fetchAllUsers(int pageNum, int pageSize);
     public Response getUserById(int id);
     public Response getUserByFBId(int fbId);
     public Response getUserByPhone(String phone);
@@ -16,4 +16,5 @@ public interface UserDao {
     public Response updateUser(User user);
     public Response deleteUserById(int contactId);
     public Response updateUserStatus(int userId,String status);
+    public Response fetchAllUsersByCourse(String course,int pageNum, int pageSize);
 }

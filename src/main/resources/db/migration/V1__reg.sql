@@ -38,7 +38,7 @@ CREATE TABLE bf_tbl_events
  id int NOT NULL AUTO_INCREMENT,
  title varchar(250) NOT NULL,
  location varchar(250) NOT NULL,
- `date` DATE NOT NULL,
+ `date` DATETIME NOT NULL,
  image varchar(1000) NULL,
  description TEXT NOT NULL,
  created_date DATE NOT NULL,
@@ -95,14 +95,40 @@ CREATE TABLE bf_tbl_job_category
 
 
 
+DELIMITER ;
 DROP procedure IF exists psp_retrieve_users;
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_users()
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_users(
+    IN page_num INT,
+    IN page_size INT
+)
 BEGIN
-  SELECT * FROM bf_tbl_users;
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+    SELECT * FROM bf_tbl_users ORDER BY name asc LIMIT offsett,page_size;
+
 END$$
 
 DELIMITER ;
+
+
+DELIMITER ;
+DROP procedure IF exists psp_retrieve_users_by_course;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_users_by_course(
+    IN page_num INT,
+    IN page_size INT,
+    IN coursee varchar(100)
+)
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+    SELECT * FROM bf_tbl_users WHERE course=coursee ORDER BY name asc LIMIT offsett,page_size;
+
+END$$
+
+DELIMITER ;
+
 
 
 DROP procedure IF exists psp_retrieve_user_by_id;
@@ -305,7 +331,7 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_event (
   IN titlee varchar(250),
   IN locationn varchar(250),
-  IN datee DATE,
+  IN datee DATETIME,
   IN imagee varchar(1000),
   IN descriptionn TEXT,
   IN created_datee DATE,
@@ -521,6 +547,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_event_by_date (
   IN datee DATE
   )
 BEGIN
-    SELECT * FROM bf_tbl_events WHERE date=datee ORDER BY id desc;
+    SELECT * FROM bf_tbl_events WHERE CAST(date AS DATE)=CAST(datee AS DATE) ORDER BY id desc;
+END$$
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_events_between_date;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_events_between_date (
+  IN start_datee DATE,
+  IN end_datee DATE
+  )
+BEGIN
+    SELECT * FROM bf_tbl_events WHERE  CAST(date AS DATE) >= CAST(start_datee AS DATE) AND date<=CAST(end_datee AS DATE) ORDER BY id desc;
 END$$
 

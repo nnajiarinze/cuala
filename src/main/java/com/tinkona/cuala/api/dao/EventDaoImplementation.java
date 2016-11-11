@@ -24,7 +24,8 @@ import java.util.Map;
 public class EventDaoImplementation implements EventDao {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall create, update, getEventById,getEventByDate,fetchPaginated,delete,createInvitationResponse,getInvitationResponse;
+    private SimpleJdbcCall create, update, getEventById,getEventByDate,fetchPaginated,delete,createInvitationResponse,getInvitationResponse,
+            getEventsBetweenDates;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -33,6 +34,7 @@ public class EventDaoImplementation implements EventDao {
         fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_paginated_events").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(Event.class));
         getEventById = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_event_by_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(Event.class));
         getEventByDate = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_event_by_date").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(Event.class));
+        getEventsBetweenDates = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_events_between_date").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(Event.class));
         getInvitationResponse = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_user_event_invitation_response").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(EventInvitation.class));
         create = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_event");
         createInvitationResponse = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_event_invitation");
@@ -167,6 +169,25 @@ public class EventDaoImplementation implements EventDao {
     public Response getEventsByDate(String date) {
         MapSqlParameterSource in = (new MapSqlParameterSource()).addValue("datee",date);
         Map<String, Object> m = getEventByDate.execute(in);
+        Event event =null;
+        List<Event> eventsList = new ArrayList<>();
+        Response<Event> response =null;
+        if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
+            eventsList = (List<Event>) ((List) m.get("list"));
+            response = new Response<Event>("00","Successful",eventsList,event);
+        }else{
+            response = new Response<Event>("","End of List",eventsList,event);
+        }
+
+        return response;
+
+    }
+
+    @Override
+    public Response<Event> getEventsBetweenDates(String startDate, String endDate) {
+        MapSqlParameterSource in = (new MapSqlParameterSource()).addValue("start_datee",startDate)
+                                    .addValue("end_datee",endDate);
+        Map<String, Object> m = getEventsBetweenDates.execute(in);
         Event event =null;
         List<Event> eventsList = new ArrayList<>();
         Response<Event> response =null;

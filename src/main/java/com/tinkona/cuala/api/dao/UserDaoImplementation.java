@@ -24,7 +24,7 @@ import java.util.Map;
 public class UserDaoImplementation implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall create, update,fetchAll, getUserByPhone,
+    private SimpleJdbcCall create, update,fetchAll, getUserByPhone,fetchAllUsersByCourse,
             getUserByUsername, getUserById, getUserByFBId, getUserByMatricNo;
 
     @Autowired
@@ -32,6 +32,7 @@ public class UserDaoImplementation implements UserDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.setResultsMapCaseInsensitive(true);
         fetchAll = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_users").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
+        fetchAllUsersByCourse = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_users_by_course").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
         create = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_user");
         update = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_update_user");
         getUserByPhone = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_retrieve_user_by_phone").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(User.class));
@@ -74,8 +75,27 @@ public class UserDaoImplementation implements UserDao {
     }
 
     @Override
-    public Response fetchAllUsers() {
-        Map<String, Object> m = fetchAll.execute();
+    public Response fetchAllUsers(int pageNum, int pageSize) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("page_num", pageNum)
+                .addValue("page_size", pageSize);
+        Map<String, Object> m = fetchAll.execute(in);
+        User user = null;
+        List<User> list = new ArrayList<>();
+        if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
+            list = (List<User>) ((List) m.get("list"));
+        }
+        Response<User> response = new Response<>("00","Operation Successful",list, user);
+        return response;
+    }
+
+    @Override
+    public Response fetchAllUsersByCourse(String course,int pageNum, int pageSize) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("coursee",course)
+                .addValue("page_num", pageNum)
+                .addValue("page_size", pageSize);
+        Map<String, Object> m = fetchAllUsersByCourse.execute(in);
         User user = null;
         List<User> list = new ArrayList<>();
         if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {

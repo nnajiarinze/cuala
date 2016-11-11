@@ -48,6 +48,13 @@ public class EventController {
         return eventService.getEventsByDate(date);
     }
 
+    @RequestMapping(value = "/between",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<Event> getEventBetweenDates(@RequestParam(value = "startDate") String startDate,@RequestParam(value = "endDate") String endDate){
+
+        return eventService.getEventsBetweenDates(startDate,endDate);
+    }
+
     @RequestMapping(value = "/{eventId}/{userId}/{response}",method = RequestMethod.POST)
     public @ResponseBody
     Response<Event> eventInvitation(@PathVariable Integer eventId, @PathVariable Integer userId,@PathVariable Boolean response){

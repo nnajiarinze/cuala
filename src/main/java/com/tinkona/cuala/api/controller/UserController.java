@@ -29,8 +29,14 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
-    Response<User> getAllUsers(){
-        return userService.getAllUsers();
+    Response<User> getAllUsersPaginated(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return userService.getAllUsers(pageNum,pageSize);
+    }
+
+    @RequestMapping(value="/course",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<User> getAllUsersByCourse(@RequestParam(value = "course") String course,@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return userService.fetchAllUsersByCourse(course,pageNum,pageSize);
     }
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)

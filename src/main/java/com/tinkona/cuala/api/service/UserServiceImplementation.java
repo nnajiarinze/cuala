@@ -23,8 +23,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public Response getAllUsers() {
-        return userDao.fetchAllUsers();
+    public Response getAllUsers(int pageNum, int pageSize) {
+        return userDao.fetchAllUsers(pageNum, pageSize);
     }
 
     @Override
@@ -65,5 +65,10 @@ public class UserServiceImplementation implements UserService {
     @Override
     public Response updateUserStatus(int userId, String status) {
         return userDao.updateUserStatus(userId,status);
+    }
+
+    @Override
+    public Response fetchAllUsersByCourse(String course, int pageNum, int pageSize) {
+        return userDao.fetchAllUsersByCourse(course,pageNum,pageSize);
     }
 }

@@ -16,4 +16,5 @@ public interface EventDao {
     public Response createInvitationResponse(Integer eventId, Integer userId, Boolean response);
     public Response getInvitationResponse(Integer eventId, Integer userId);
     public Response getEventsByDate(String date);
+    public Response<Event> getEventsBetweenDates(String startDate, String endDate);
 }

@@ -59,5 +59,10 @@ public class EventServiceImplementation implements EventService {
 
     }
 
+    @Override
+    public Response<Event> getEventsBetweenDates(String startDate, String endDate) {
+        return eventDao.getEventsBetweenDates(startDate,endDate);
+    }
+
 
 }

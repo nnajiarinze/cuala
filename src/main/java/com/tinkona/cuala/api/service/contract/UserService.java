@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface UserService {
     public Response createUser(User user);
-    public Response getAllUsers();
+    public Response getAllUsers(int pageNum, int pageSize);
     public Response getUserById(int id);
     public Response getUserByFacebookId(int facebookId);
     public Response getUserByPhone(String mobileNumber);
@@ -19,4 +19,5 @@ public interface UserService {
     public Response updateUser(User user);
     public Response deleteUserById(int contactId);
     public Response updateUserStatus(int userId,String status);
+    public Response fetchAllUsersByCourse(String course,int pageNum, int pageSize);
 }
