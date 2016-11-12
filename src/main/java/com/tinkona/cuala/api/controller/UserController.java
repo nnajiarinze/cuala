@@ -39,6 +39,18 @@ public class UserController {
         return userService.fetchAllUsersByCourse(course,pageNum,pageSize);
     }
 
+    @RequestMapping(value="/yog",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<User> getAllUsersByGradYear(@RequestParam(value = "gradYear") int gradYear,@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return userService.fetchAllUsersByGradYear(gradYear,pageNum,pageSize);
+    }
+
+    @RequestMapping(value="/search",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<User> search(@RequestParam(value = "name") String name,@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return userService.search(name,pageNum,pageSize);
+    }
+
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public @ResponseBody
     Response<User> getUserById(@PathVariable int id){

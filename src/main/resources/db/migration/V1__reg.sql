@@ -131,6 +131,48 @@ DELIMITER ;
 
 
 
+DELIMITER ;
+DROP procedure IF exists psp_retrieve_users_by_grad_year;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_users_by_grad_year(
+    IN page_num INT,
+    IN page_size INT,
+    IN grad_yearr INT
+)
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+    SELECT * FROM bf_tbl_users WHERE grad_year=grad_yearr ORDER BY name asc LIMIT offsett,page_size;
+
+END$$
+
+DELIMITER ;
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_search_users_by_name;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_search_users_by_name(
+    IN page_num INT,
+    IN page_size INT,
+    IN namee varchar(255)
+)
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+    SELECT * FROM bf_tbl_users WHERE name LIKE CONCAT('%',namee,'%') LIMIT offsett,page_size;
+
+END$$
+
+DELIMITER ;
+
+
+
+
+
+
+
 DROP procedure IF exists psp_retrieve_user_by_id;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE psp_retrieve_user_by_id (

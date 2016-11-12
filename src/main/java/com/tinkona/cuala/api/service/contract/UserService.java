@@ -20,4 +20,6 @@ public interface UserService {
     public Response deleteUserById(int contactId);
     public Response updateUserStatus(int userId,String status);
     public Response fetchAllUsersByCourse(String course,int pageNum, int pageSize);
+    public Response fetchAllUsersByGradYear(int gradYear,int pageNum, int pageSize);
+    public Response search(String name, int pageNum, int pageSize);
 }

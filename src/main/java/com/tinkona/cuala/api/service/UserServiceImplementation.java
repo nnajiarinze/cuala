@@ -71,4 +71,14 @@ public class UserServiceImplementation implements UserService {
     public Response fetchAllUsersByCourse(String course, int pageNum, int pageSize) {
         return userDao.fetchAllUsersByCourse(course,pageNum,pageSize);
     }
+
+    @Override
+    public Response fetchAllUsersByGradYear(int gradYear, int pageNum, int pageSize) {
+        return userDao.fetchAllUsersByGradYear(gradYear,pageNum,pageSize);
+    }
+
+    @Override
+    public Response search(String name, int pageNum, int pageSize) {
+        return userDao.search(name,pageNum,pageSize);
+    }
 }
