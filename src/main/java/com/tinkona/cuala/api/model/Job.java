@@ -10,6 +10,7 @@ public class Job {
     private String location;
     private String description;
     private String createdDate;
+    private String categoryName;
     private String endDate;
     private String lastModifiedDate;
 
@@ -17,7 +18,7 @@ public class Job {
     }
 
     public Job(int id, int categoryId, String title, String location,String description, String createDate
-    , String endDate,String lastModifiedDate) {
+    , String endDate,String lastModifiedDate,String categoryName) {
         this.id = id;
         this.categoryId=categoryId;
         this.title = title;
@@ -26,6 +27,7 @@ public class Job {
         this.createdDate = createDate;
         this.endDate = endDate;
         this.lastModifiedDate = lastModifiedDate;
+        this.categoryName = categoryName;
     }
 
     public int getId() {
@@ -90,5 +92,13 @@ public class Job {
 
     public void setLastModifiedDate(String lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

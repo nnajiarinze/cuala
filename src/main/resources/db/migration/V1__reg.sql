@@ -497,7 +497,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_job_by_id (
   IN idd INT
   )
 BEGIN
-    SELECT * FROM bf_tbl_jobs WHERE id=idd;
+    SELECT bf_tbl_jobs.*, bf_tbl_job_category.name as category_name FROM bf_tbl_jobs
+      JOIN bf_tbl_job_category ON bf_tbl_jobs.category_id=bf_tbl_job_category.id
+      WHERE bf_tbl_jobs.id=idd;
 END$$
 
 
@@ -513,7 +515,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_paginated_jobs (
 BEGIN
     DECLARE offsett INT;
     SET offsett = (page_num - 1) * page_size;
-	SELECT * FROM bf_tbl_jobs ORDER BY id desc LIMIT offsett,page_size;
+SELECT bf_tbl_jobs.* , bf_tbl_job_category.name as category_name
+FROM bf_tbl_jobs JOIN bf_tbl_job_category ON bf_tbl_jobs.category_id=bf_tbl_job_category.id
+  ORDER BY id desc LIMIT offsett,page_size;
 
 END$$
 
