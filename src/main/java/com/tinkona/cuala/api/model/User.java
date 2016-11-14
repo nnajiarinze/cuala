@@ -14,11 +14,12 @@ public class User {
     private String course;
     private String occupation;
     private String regNo;
+    private String image;
 
     public User() {
     }
 
-    public User(int id, String fbId, String name, String email, String matricNo,String regNo, String phone, int gradYear, String course, String occupation) {
+    public User(int id, String fbId, String name, String email, String matricNo,String regNo, String phone, int gradYear, String course, String occupation,String image) {
         this.id = id;
         this.fbId = fbId;
         this.name = name;
@@ -29,6 +30,7 @@ public class User {
         this.gradYear = gradYear;
         this.course = course;
         this.occupation = occupation;
+        this.image = image;
     }
 
     public int getId() {
@@ -109,5 +111,13 @@ public class User {
 
     public void setRegNo(String regNo) {
         this.regNo = regNo;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

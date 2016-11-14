@@ -10,6 +10,7 @@ phone varchar(255)  NOT NULL UNIQUE,
 matric_no varchar(11)  NOT NULL UNIQUE,
 reg_no varchar(10) NULL,
 grad_year INT NOT null,
+image varchar(255) NULL,
 course varchar(255),
 occupation varchar(255),
 PRIMARY KEY (ID)
@@ -248,13 +249,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_user (
   IN matric_noo varchar(11),
   IN reg_noo varchar(10),
   IN grad_yearr INT,
+  IN imagee varchar(255),
   IN coursee varchar(255),
   IN occupationn varchar(255),
   OUT id INT
   )
 BEGIN
-	INSERT INTO bf_tbl_users(fb_id,`name`,email,phone,matric_no,reg_no,grad_year,course,occupation)
-    VALUES(fb_idd,namee,emaill,phonee,matric_noo,reg_noo,grad_yearr,coursee,occupationn);
+	INSERT INTO bf_tbl_users(fb_id,`name`,email,phone,matric_no,reg_no,image,grad_year,course,occupation)
+    VALUES(fb_idd,namee,emaill,phonee,matric_noo,reg_noo,imagee,grad_yearr,coursee,occupationn);
 
 	SET id = LAST_INSERT_ID();
 END$$
@@ -272,12 +274,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_update_user (
   IN matric_noo varchar(11),
   IN reg_noo varchar(10),
   IN grad_yearr INT,
+  IN imagee varchar(255),
   IN coursee varchar(255),
   IN occupationn varchar(255)
   )
 BEGIN
      UPDATE bf_tbl_users SET fb_id=fb_idd ,`name`=namee, email=emaill,phone=phonee,matric_no=matric_noo,reg_no=reg_noo,grad_year=grad_yearr,
-     course=coursee,occupation=occupationn WHERE id=idd;
+     course=coursee,occupation=occupationn,image=imagee WHERE id=idd;
 END$$
 
 DELIMITER ;
