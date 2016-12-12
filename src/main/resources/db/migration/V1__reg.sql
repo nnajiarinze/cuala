@@ -330,7 +330,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_news_by_id (
   )
 BEGIN
 
-	SELECT * FROM bf_tbl_news WHERE id=idd;
+
+	SELECT bf_tbl_news.* , COUNT(bf_tbl_news_comments.news_id) as comments FROM bf_tbl_news
+    JOIN bf_tbl_news_comments ON bf_tbl_news.id = bf_tbl_news_comments.news_id
+    WHERE bf_tbl_news.id=idd;
 
 END$$
 

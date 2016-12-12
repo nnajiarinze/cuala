@@ -131,6 +131,10 @@ public class NewsDaoImplementation implements NewsDao {
             news = (News)((List)m.get("list")).get(0);
             response = new Response<News>("00","Operation Successful",newsList, news);
             response.setNoOfRecords(((List) m.get("list")).size());
+
+            if(m.containsKey("#result-set-2")){
+                news.setComments(((News) ((List)m.get("#result-set-2")).get(0)).getComments());
+            }
         }else{
             response = new Response<News>("00","No record",newsList,news);
         }

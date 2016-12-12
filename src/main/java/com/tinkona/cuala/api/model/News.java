@@ -16,12 +16,13 @@ public class News {
     private String image;
     private Boolean deleted;
     private String lastModifiedDate;
+    private int comments;
 
     public News() {
     }
 
     public News(int id, String headline, String brief, String description, String publishDate, String author, String tweetText, String createDate, String tags, String image
-    ,Boolean deleted, String lastModifiedDate) {
+            , Boolean deleted, String lastModifiedDate, int comments) {
         this.id = id;
         this.headline = headline;
         this.brief =brief;
@@ -34,6 +35,7 @@ public class News {
         this.image=image;
         this.deleted = deleted;
         this.lastModifiedDate = lastModifiedDate;
+        this.comments = comments;
     }
 
 
@@ -131,5 +133,13 @@ public class News {
 
     public void setLastModifiedDate(String lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public int getComments() {
+        return comments;
+    }
+
+    public void setComments(int comments) {
+        this.comments = comments;
     }
 }
