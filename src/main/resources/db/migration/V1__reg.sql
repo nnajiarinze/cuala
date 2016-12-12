@@ -105,6 +105,23 @@ CREATE TABLE bf_tbl_hope_services
 
 
 
+CREATE TABLE bf_tbl_hope_events
+(
+ id int NOT NULL AUTO_INCREMENT,
+ service_id int NOT NULL,
+ title varchar(250) NOT NULL,
+ location varchar(250) NOT NULL,
+ `date` DATETIME NOT NULL,
+ image varchar(1000) NULL,
+ description TEXT NOT NULL,
+ created_date DATE NOT NULL,
+ deleted BOOLEAN default FALSE,
+ last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (ID)
+);
+
+
+
 
 
 
@@ -487,6 +504,7 @@ END$$
 
 
 
+
 DELIMITER ;
 DROP procedure IF exists psp_create_job;
 DELIMITER $$
@@ -655,5 +673,130 @@ BEGIN
     SELECT * FROM bf_tbl_hope_services;
 
 END$$
+
+
+
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_create_hope_event;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_hope_event (
+  IN titlee varchar(250),
+  IN service_idd INT,
+  IN locationn varchar(250),
+  IN datee DATETIME,
+  IN imagee varchar(1000),
+  IN descriptionn TEXT,
+  IN created_datee DATE,
+  OUT id INT
+  )
+BEGIN
+        INSERT INTO bf_tbl_hope_events (service_id,title,location,`date`,image,description,created_date)
+         VALUES (service_idd,titlee,locationn,datee,imagee,descriptionn,created_datee);
+
+        SET id = LAST_INSERT_ID();
+END$$
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_hope_event_by_id;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_hope_event_by_id (
+  IN idd INT
+  )
+BEGIN
+    SELECT bf_tbl_hope_events.*, bf_tbl_hope_services.name as service_name
+     FROM bf_tbl_hope_events
+     JOIN bf_tbl_hope_services ON bf_tbl_hope_services.id= bf_tbl_hope_events.service_id
+      WHERE bf_tbl_hope_events.id=idd;
+
+END$$
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_paginated_hope_events;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_paginated_hope_events (
+  IN page_size INT,
+  IN page_num INT
+  )
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+	 SELECT bf_tbl_hope_events.*, bf_tbl_hope_services.name as service_name
+	FROM bf_tbl_hope_events
+	 JOIN bf_tbl_hope_services ON bf_tbl_hope_services.id= bf_tbl_hope_events.service_id
+    WHERE bf_tbl_hope_events.deleted=false
+    ORDER BY bf_tbl_hope_events.id DESC
+    LIMIT offsett,page_size;
+
+END$$
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_hope_event_by_date;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_hope_event_by_date (
+  IN datee DATE
+  )
+BEGIN
+    SELECT bf_tbl_hope_events.*, bf_tbl_hope_services.name as service_name
+    FROM bf_tbl_hope_events
+    JOIN bf_tbl_hope_services ON bf_tbl_hope_services.id= bf_tbl_hope_events.service_id
+     WHERE CAST(date AS DATE)=CAST(datee AS DATE)
+     ORDER BY bf_tbl_hope_events.id desc;
+END$$
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_hope_events_between_date;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_hope_events_between_date (
+  IN start_datee DATE,
+  IN end_datee DATE
+  )
+BEGIN
+     SELECT bf_tbl_hope_events.*, bf_tbl_hope_services.name as service_name
+     FROM bf_tbl_hope_events
+      JOIN bf_tbl_hope_services ON bf_tbl_hope_services.id= bf_tbl_hope_events.service_id
+     WHERE  CAST(date AS DATE) >= CAST(start_datee AS DATE) AND date<=CAST(end_datee AS DATE)
+     ORDER BY bf_tbl_hope_events.id desc;
+END$$
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_paginated_news_comments;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_paginated_news_comments (
+  IN news_idd INT,
+  IN page_size INT,
+  IN page_num INT
+  )
+BEGIN
+    DECLARE offsett INT;
+    SET offsett = (page_num - 1) * page_size;
+	 SELECT bf_tbl_news_comments.*, bf_tbl_users.name as user_name
+	FROM bf_tbl_news_comments
+	JOIN bf_tbl_users ON bf_tbl_news_comments.user_id= bf_tbl_users.id
+	WHERE bf_tbl_news_comments.news_id = news_idd
+    ORDER BY bf_tbl_news_comments.id DESC
+    LIMIT offsett,page_size;
+
+END$$
+
+
+
+
+
+
 
 

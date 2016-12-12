@@ -15,4 +15,7 @@ public interface NewsService {
     public Response getNewsById(int id);
     public Response update(News news);
     public Response delete(int id);
+
+    Response fetchPaginatedComments(int pageNum, int pageSize, Integer id);
+
 }

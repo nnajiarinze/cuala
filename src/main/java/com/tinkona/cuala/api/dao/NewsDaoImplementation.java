@@ -24,13 +24,14 @@ import java.util.Map;
 public class NewsDaoImplementation implements NewsDao {
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall create, update,getNewsById, fetchPaginated,delete,create_comment;
+    private SimpleJdbcCall create, update,getNewsById, fetchPaginated,delete,create_comment,fetchPaginatedComments;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.setResultsMapCaseInsensitive(true);
         fetchPaginated = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_fetch_paginated_news").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
+        fetchPaginatedComments = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_paginated_news_comments").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(NewsComment.class));
         getNewsById = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_get_news_by_id").returningResultSet("LIST", BeanPropertyRowMapper.newInstance(News.class));
         create = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_news");
         create_comment = new SimpleJdbcCall(jdbcTemplate).withProcedureName("psp_create_news_comment");
@@ -193,6 +194,25 @@ public class NewsDaoImplementation implements NewsDao {
         }catch(Exception ex){
 
             response = new Response<News>("500","Failed to delete",0);
+        }
+
+        return response;
+    }
+
+    @Override
+    public Response fetchPaginatedComments(int pageNum, int pageSize, Integer id) {
+        MapSqlParameterSource in = (new MapSqlParameterSource()).addValue("page_num", pageNum)
+                .addValue("page_size", pageSize)
+                .addValue("news_idd", id);
+        Map<String, Object> m = fetchPaginatedComments.execute(in);
+        NewsComment newsComment =null;
+        List<NewsComment> newsCommentList = new ArrayList<>();
+        Response<NewsComment> response =null;
+        if (m.containsKey("list") && m.get("list") != null && ((List) m.get("list")).size() > 0) {
+            newsCommentList = (List<NewsComment>) ((List) m.get("list"));
+            response = new Response<NewsComment>("00","Successful",newsCommentList,newsComment);
+        }else{
+            response = new Response<NewsComment>("","End of List",newsCommentList,newsComment);
         }
 
         return response;

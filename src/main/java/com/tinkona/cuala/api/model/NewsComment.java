@@ -8,16 +8,18 @@ public class NewsComment {
     private int newsId;
     private int userId;
     private String comment;
+    private String userName;
     private String lastModifiedDate;
 
     public NewsComment() {
     }
 
-    public NewsComment(int id,int newsId, int userId, String comment, String lastModifiedDate) {
+    public NewsComment(int id,int newsId, int userId, String comment, String lastModifiedDate,String userName) {
         this.id = id;
         this.newsId=newsId;
         this.userId = userId;
         this.comment = comment;
+        this.userName = userName;
         this.lastModifiedDate = lastModifiedDate;
 
     }
@@ -55,9 +57,18 @@ public class NewsComment {
         this.comment = comment;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getLastModifiedDate() {
         return lastModifiedDate;
     }
+
 
     public void setLastModifiedDate(String lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;

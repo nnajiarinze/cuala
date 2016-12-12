@@ -47,6 +47,13 @@ public class NewsController {
         return newsService.fetchPaginated(pageNum,pageSize);
     }
 
+
+    @RequestMapping(value = "/{id}/comments",method = RequestMethod.GET)
+    public @ResponseBody
+    Response<News> fetchPageinatedComments( @PathVariable Integer id,@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return newsService.fetchPaginatedComments(pageNum,pageSize,id);
+    }
+
     @RequestMapping(value = "/{id}",method = RequestMethod.POST)
     public @ResponseBody
     Response<News> update(@RequestBody News news, @PathVariable Integer id){

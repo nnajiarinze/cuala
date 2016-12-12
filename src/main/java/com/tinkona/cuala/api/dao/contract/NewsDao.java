@@ -16,4 +16,5 @@ public interface NewsDao {
     public Response update(News news);
     public Response delete(int id);
 
+    Response fetchPaginatedComments(int pageNum, int pageSize, Integer id);
 }
