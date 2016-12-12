@@ -92,7 +92,21 @@ CREATE TABLE bf_tbl_job_category
  id INT NOT NULL AUTO_INCREMENT,
  `name` varchar(255) NOT NULL UNIQUE,
  PRIMARY KEY (ID)
-)
+);
+
+
+
+CREATE TABLE bf_tbl_hope_services
+(
+ id INT NOT NULL AUTO_INCREMENT,
+ `name` varchar(255) NOT NULL UNIQUE,
+ PRIMARY KEY (ID)
+);
+
+
+
+
+
 
 
 
@@ -613,4 +627,33 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_events_between_date (
 BEGIN
     SELECT * FROM bf_tbl_events WHERE  CAST(date AS DATE) >= CAST(start_datee AS DATE) AND date<=CAST(end_datee AS DATE) ORDER BY id desc;
 END$$
+
+
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_create_hope_service;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_create_hope_service (
+  IN namee varchar(255),
+  OUT id INT
+  )
+BEGIN
+        INSERT INTO bf_tbl_hope_services (`name`) VALUES (namee);
+
+        SET id = LAST_INSERT_ID();
+END$$
+
+
+
+DELIMITER ;
+DROP procedure IF exists psp_get_hope_services;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE psp_get_hope_services ()
+BEGIN
+    SELECT * FROM bf_tbl_hope_services;
+
+END$$
+
 
